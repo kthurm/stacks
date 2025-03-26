@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
 defineProps<{
@@ -17,51 +18,63 @@ function handleImageError() {
 </script>
 
 <template>
-    <Head title="Welcome" />
-    <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+    <Head title="Welcome To Stacks" />
+    <div
+        class="radial-gradient flex min-h-screen flex-col items-center justify-between dark:text-white/50"
+    >
         <div
-            class="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white"
+            class="flex min-h-screen w-full flex-col items-center justify-center px-6"
         >
-            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                <header
-                    class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3"
+            <header class="justified-center flex flex-col">
+                <ApplicationLogo
+                    class="h-32 w-auto fill-white text-white drop-shadow-lg"
+                />
+            </header>
+            <nav
+                v-if="canLogin"
+                class="mx-3 my-12 flex justify-center space-x-5"
+            >
+                <Link
+                    v-if="$page.props.auth.user"
+                    :href="route('books.index')"
+                    class="rounded-md bg-blue-950 px-3 py-2 text-white ring-1 transition hover:bg-blue-600 focus:outline-none focus-visible:ring-[#FF2D20]"
                 >
-                    <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
-                        <Link
-                            v-if="$page.props.auth.user"
-                            :href="route('dashboard')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Dashboard
-                        </Link>
+                    Book Dashboard
+                </Link>
 
-                        <template v-else>
-                            <Link
-                                :href="route('login')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </Link>
-
-                            <Link
-                                v-if="canRegister"
-                                :href="route('register')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Register
-                            </Link>
-                        </template>
-                    </nav>
-                </header>
-
-                <main class="mt-6"></main>
-
-                <footer
-                    class="py-16 text-center text-sm text-black dark:text-white/70"
+                <Link
+                    v-if="$page.props.auth.user"
+                    :href="route('logout')"
+                    method="POST"
+                    class="rounded-md bg-blue-950 px-3 py-2 text-white ring-1 transition hover:bg-blue-600 focus:outline-none focus-visible:ring-[#FF2D20]"
                 >
-                    Stacks Library App
-                </footer>
-            </div>
+                    Log out
+                </Link>
+
+                <template v-else>
+                    <Link
+                        :href="route('login')"
+                        class="rounded-md bg-blue-950 px-3 py-2 text-white ring-1 transition hover:bg-blue-600 focus:outline-none focus-visible:ring-[#FF2D20]"
+                    >
+                        Log in
+                    </Link>
+
+                    <Link
+                        v-if="canRegister"
+                        :href="route('register')"
+                        class="rounded-md bg-blue-950 px-3 py-2 text-white ring-1 transition hover:bg-blue-600 focus:outline-none focus-visible:ring-[#FF2D20]"
+                    >
+                        Register
+                    </Link>
+                </template>
+            </nav>
+
+            <main class="mt-6"></main>
         </div>
+        <footer
+            class="w-full bg-blue-950 py-2 text-center text-sm text-white/70"
+        >
+            Stacks Library App
+        </footer>
     </div>
 </template>
