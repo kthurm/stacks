@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -11,7 +11,13 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    role: 'reader',
+    isLibrarian: false,
 });
+
+const toggleRole = () => {
+    form.role = form.isLibrarian ? 'librarian' : 'reader';
+};
 
 const submit = () => {
     form.post(route('register'), {
@@ -29,7 +35,6 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="name" value="Name" />
-
                 <TextInput
                     id="name"
                     type="text"
@@ -39,13 +44,11 @@ const submit = () => {
                     autofocus
                     autocomplete="name"
                 />
-
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="email" value="Email" />
-
                 <TextInput
                     id="email"
                     type="email"
@@ -54,13 +57,11 @@ const submit = () => {
                     required
                     autocomplete="username"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-
                 <TextInput
                     id="password"
                     type="password"
@@ -69,7 +70,6 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
@@ -78,7 +78,6 @@ const submit = () => {
                     for="password_confirmation"
                     value="Confirm Password"
                 />
-
                 <TextInput
                     id="password_confirmation"
                     type="password"
@@ -87,13 +86,26 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
-
                 <InputError
                     class="mt-2"
                     :message="form.errors.password_confirmation"
                 />
             </div>
 
+            <div class="mt-4">
+                <input
+                    type="checkbox"
+                    id="librarian"
+                    v-model="form.isLibrarian"
+                    @change="toggleRole"
+                />
+                <label for="librarian" class="ml-2"
+                    >Register as Librarian</label
+                >
+                <InputError class="mt-2" :message="form.errors.role" />
+            </div>
+
+            <!-- Submit Button -->
             <div class="mt-4 flex items-center justify-end">
                 <Link
                     :href="route('login')"
