@@ -1,16 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Link } from '@inertiajs/inertia-vue3';
 import { defineProps } from 'vue';
 
 const props = defineProps({
     canLogin: {
         type: Boolean,
-        default: true, // Set a default if not provided
+        default: true,
     },
     canRegister: {
         type: Boolean,
-        default: true, // Set a default if not provided
+        default: true,
     },
 });
 </script>
@@ -22,40 +24,56 @@ const props = defineProps({
         >
             <a href="/" class="navbar-brand">
                 <ApplicationLogo
-                    class="h-9 w-auto fill-current text-black sm:h-16"
+                    class="block h-9 w-auto fill-current text-black sm:h-16"
                 />
             </a>
 
-            <div class="flex items-center space-x-4 px-2">
-                <NavLink :href="route('books.index')">Books</NavLink>
+            <div>
                 <nav
                     v-if="props.canLogin"
-                    class="-mx-3 flex flex-1 justify-end"
+                    class="space-x- flex flex-col justify-end space-y-1 md:flex-row md:space-x-10 md:space-y-0"
                 >
-                    <Link
-                        v-if="$page.props.auth.user"
-                        :href="route('logout')"
-                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                    <div class="flex justify-end space-x-2">
+                        <NavLink :href="route('books.index')">Books</NavLink>
+                        <NavLink
+                            v-if="$page.props.user"
+                            :href="route('logout')"
+                            method="POST"
+                        >
+                            Logout
+                        </NavLink>
+
+                        <template v-else>
+                            <NavLink :href="route('login')"> Log in </NavLink>
+                            <NavLink
+                                v-if="props.canRegister"
+                                :href="route('register')"
+                            >
+                                Register
+                            </NavLink>
+                        </template>
+                    </div>
+                    <div
+                        v-if="
+                            $page.props.user &&
+                            $page.props.user.role === 'librarian'
+                        "
+                        class="flex justify-end space-x-2"
                     >
-                        Logout
-                    </Link>
-
-                    <template v-else>
-                        <Link
-                            :href="route('login')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Log in
+                        <PrimaryButton>
+                            <Link :href="route('books.create')"
+                                >Add New Book</Link
+                            >
+                        </PrimaryButton>
+                        <PrimaryButton>
+                            <Link :href="route('dashboard')">Dashboard</Link>
+                        </PrimaryButton>
+                    </div>
+                    <PrimaryButton>
+                        <Link :href="route('books.checkedOut')">
+                            My Books
                         </Link>
-
-                        <Link
-                            v-if="props.canRegister"
-                            :href="route('register')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Register
-                        </Link>
-                    </template>
+                    </PrimaryButton>
                 </nav>
             </div>
         </div>
