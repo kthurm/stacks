@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
     books: {
@@ -16,10 +17,28 @@ const props = defineProps<{
         last_page: number;
     };
 }>();
+
+// Get the sort option from the URL query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const initialSortOption = urlParams.get('sort') || 'created_at'; // Default to 'created_at'
+
+// Set up the sortOption state
+const sortOption = ref(initialSortOption); // Default sorting by 'created_at' to show latest book first
+
+// Watch for changes in sortOption and update the page URL to reflect sorting choice
+watch(sortOption, (newSortOption) => {
+    // If reset is selected, clear the sort option from the URL
+    if (newSortOption === 'reset') {
+        window.location.href = `/books?page=${props.books.current_page}`;
+    } else {
+        window.location.href = `/books?sort=${newSortOption}&page=${props.books.current_page}`;
+    }
+});
 </script>
 
 <template>
     <Head title="Books" />
+
     <AppLayout>
         <div class="radial-gradient">
             <div class="container mx-auto py-12">
@@ -28,6 +47,22 @@ const props = defineProps<{
                 >
                     Featured Books
                 </h1>
+
+                <!-- Sort Dropdown -->
+                <div class="text-right">
+                    <!-- <label for="sort">Sort</label> -->
+                    <select
+                        id="sort"
+                        v-model="sortOption"
+                        class="ml-2 rounded border-gray-300 p-2"
+                    >
+                        <option value="created_at">Default</option>
+                        <option value="title">Title A-Z</option>
+                        <option value="published_year">Published Year</option>
+                        <option value="author">Author A-Z</option>
+                        <option value="reset">Reset Sort</option>
+                    </select>
+                </div>
 
                 <div
                     v-if="props.books.data.length === 0"
@@ -45,7 +80,6 @@ const props = defineProps<{
                         :key="book.id"
                         class="rounded-lg bg-gray-50 shadow-xl"
                     >
-                        <!-- Use Inertia's Link component for navigation -->
                         <Link
                             :href="`/books/${book.id}`"
                             class="block cursor-pointer"
@@ -72,13 +106,13 @@ const props = defineProps<{
                 <div v-if="props.books.last_page > 1" class="pagination">
                     <Link
                         v-if="props.books.current_page > 1"
-                        :href="`/books?page=${props.books.current_page - 1}`"
+                        :href="`/books?page=${props.books.current_page - 1}&sort=${sortOption}`"
                     >
                         Previous
                     </Link>
                     <Link
                         v-if="props.books.current_page < props.books.last_page"
-                        :href="`/books?page=${props.books.current_page + 1}`"
+                        :href="`/books?page=${props.books.current_page + 1}&sort=${sortOption}`"
                     >
                         Next
                     </Link>
