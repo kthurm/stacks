@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import { defineProps } from 'vue';
 
 const props = defineProps<{
@@ -17,7 +17,20 @@ const props = defineProps<{
         category: string;
         rating: number;
     };
+    user: {
+        role: string;
+    };
 }>();
+
+const form = useForm('');
+function borrowBook() {
+    form.post(route('books.borrow', props.book.id), {
+        onSuccess: () => {},
+        onError: (errors) => {
+            console.error(errors);
+        },
+    });
+}
 </script>
 
 <template>
@@ -68,8 +81,29 @@ const props = defineProps<{
                         </svg>
                     </template>
                 </div>
-                <PrimaryButton>Borrow</PrimaryButton>
+
+                <template v-if="props.user">
+                    <PrimaryButton
+                        @click="borrowBook"
+                        :disabled="
+                            !props.book.available || props.book.stock <= 0
+                        "
+                        :class="{
+                            'pointer-events-none bg-gray-500 hover:bg-gray-500':
+                                !(props.book.available && props.book.stock > 0),
+                            'bg-blue-900':
+                                props.book.available && props.book.stock > 0,
+                        }"
+                    >
+                        {{
+                            props.book.available && props.book.stock > 0
+                                ? 'Borrow'
+                                : 'Unavailable'
+                        }}
+                    </PrimaryButton>
+                </template>
             </div>
+
             <div class="my-3">
                 <div class="mb-3 flex space-x-2 text-xs uppercase">
                     <svg
