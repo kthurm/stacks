@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Inertia::share([
-            'user' => fn () => Auth::user(),
+            'user' => fn () => [
+                'name' => Auth::user()->name,    // Only share the name
+                'role' => Auth::user()->role,    // Only share the role
+            ],
         ]);
     }
 
