@@ -16,8 +16,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Inertia::share([
             'user' => fn () => [
-                'name' => Auth::user()->name,    // Only share the name
-                'role' => Auth::user()->role,    // Only share the role
+                'name' => optional(Auth::user())->name,
+                'role' => optional(Auth::user())->role,
             ],
         ]);
     }
