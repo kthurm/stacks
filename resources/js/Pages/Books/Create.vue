@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { Inertia } from '@inertiajs/inertia';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
 
 const form = useForm({
@@ -12,16 +13,15 @@ const form = useForm({
     summary: '',
     category: '',
     cover_image: '',
+    isFeatured: false,
     stock: '1',
     available: '1',
 });
 
-// Handle form submission
 const submit = () => {
     form.post(route('books.store'), {
         onFinish: () => {
             if (!form.errors.length) {
-                // Redirect to dashboard if no validation errors
                 Inertia.visit(route('dashboard'));
             }
         },
@@ -35,9 +35,7 @@ const submit = () => {
         <div class="container mx-auto mt-5 max-w-3xl border p-4 shadow">
             <h1 class="my-5 text-4xl">Add a Book</h1>
 
-            <!-- Book creation form -->
             <form @submit.prevent="submit" class="space-y-4">
-                <!-- Book Title -->
                 <div>
                     <label
                         for="title"
@@ -59,7 +57,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Book Author -->
                 <div>
                     <label
                         for="author"
@@ -81,7 +78,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Category -->
                 <div>
                     <label
                         for="category"
@@ -103,7 +99,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Published Year -->
                 <div>
                     <label
                         for="published_year"
@@ -127,7 +122,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Publisher -->
                 <div>
                     <label
                         for="publisher"
@@ -148,7 +142,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- ISBN -->
                 <div>
                     <label
                         for="isbn"
@@ -169,7 +162,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Page Count -->
                 <div>
                     <label
                         for="page_count"
@@ -190,7 +182,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Summary -->
                 <div>
                     <label
                         for="summary"
@@ -210,7 +201,6 @@ const submit = () => {
                     </p>
                 </div>
 
-                <!-- Book Cover Image URL -->
                 <div>
                     <label
                         for="cover_image_url"
@@ -229,6 +219,24 @@ const submit = () => {
                     >
                         {{ form.errors.cover_image }}
                     </p>
+                </div>
+
+                <div>
+                    <label
+                        for="isFeatured"
+                        class="block text-sm font-medium text-gray-700"
+                    >
+                        Featured
+                    </label>
+                    <input
+                        id="isFeatured"
+                        type="checkbox"
+                        v-model="form.isFeatured"
+                        class="mr-2 mt-1"
+                    />
+                    <span class="text-sm text-gray-500"
+                        >Mark this book as featured</span
+                    >
                 </div>
 
                 <!-- Submit Button -->
