@@ -16,35 +16,37 @@ git clone https://github.com/kthurm/stack
 
 cd stacks
 
-### 2 Install Dependencies
+### 2. Install Dependencies
 Next, install the required dependencies:
 
 composer install
 
 npm install
 
-### 2 Set Up the Environment File
+### 3. Set Up the Environment File
 Copy the .env.example file to .env:
 
 cp .env.example .env
 
 Open the .env file and set the following configurations:
 
-### 3 Database connection: Set to SQLite.
+### 4. Database connection: Set to SQLite.
 
 APP_URL: Set the application URL (e.g., http://stacks.test if running locally).
 
-### 4. Migrate the Database
+### 5. Migrate the Database
 Run the following command to migrate the database:
 
 php artisan migrate
 
-### 5. Seed the Database
+### 6. Seed the Database
 Seed the database with sample data:
 
 php artisan db:seed
 
-### 6. Run the Program
+(note you can also run php artisan migrate --seed)
+
+### 7. Run the Program
 If you have Herd, check your Herd projects.
 
 If using valet run:
