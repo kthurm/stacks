@@ -27,6 +27,7 @@ npm install
 Copy the .env.example file to .env:
 
 cp .env.example .env
+
 Open the .env file and set the following configurations:
 
 ### 3 Database connection: Set to SQLite.
@@ -44,6 +45,14 @@ Seed the database with sample data:
 php artisan db:seed
 
 ### 6. Run the Program
+If you have Herd, check your Herd projects.
+
+If using valet run:
+
+php artisan key
+
+valet link
+
 Start the development server by running:
 
 npm run dev
