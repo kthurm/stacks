@@ -22,7 +22,7 @@ const props = defineProps({
         <div
             class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4"
         >
-            <a href="/" class="navbar-brand">
+            <a href="/books" class="navbar-brand">
                 <ApplicationLogo
                     class="block h-9 w-auto fill-current text-black sm:h-16"
                 />
