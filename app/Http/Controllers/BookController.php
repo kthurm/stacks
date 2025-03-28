@@ -38,11 +38,13 @@ class BookController
 
     public function dashboard()
     {
-        $books = Book::paginate(40);
+        $books = Book::orderBy('created_at', 'desc')->paginate(40);
+
 
         return Inertia::render('Dashboard', [
-            'books' => $books,
+            'books' => $books
         ]);
+
     }
 
     public function show(Book $book)
