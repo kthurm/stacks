@@ -71,11 +71,6 @@ const props = defineProps({
                             >
                         </PrimaryButton>
                     </div>
-                    <PrimaryButton>
-                        <Link :href="route('books.checkedout')">
-                            My Books
-                        </Link>
-                    </PrimaryButton>
                 </nav>
             </div>
         </div>
