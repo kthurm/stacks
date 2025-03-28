@@ -29,11 +29,11 @@ class Book extends Model
         'available',
         'isFeatured',
     ];
-    public function reviews() {
-        return $this->hasMany(Review::class);
-    }
+
 
     public function users() {
         return $this->belongsToMany(User::class)->withPivot('is_checked_out')->withTimestamps();
     }
+
+
 }
