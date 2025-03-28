@@ -10,7 +10,7 @@ const props = defineProps<{
         title: string;
         author: string;
         published_year: number;
-        description: string;
+        summary: string;
         cover_image: string;
         publisher: string;
         page_count: number;
@@ -144,7 +144,7 @@ function borrowBook() {
                     </p>
 
                     <p class="mt-5 text-left">
-                        {{ props.book.description }}
+                        {{ props.book.summary }}
                     </p>
                 </div>
             </div>
