@@ -62,11 +62,11 @@ watch(sortOption, () => {
     );
 });
 const clearSearch = () => {
-    search.value = ''; // Clear the search term
+    search.value = '';
     Inertia.get(
         route('books.index'),
         {
-            search: '', // Clear search filter
+            search: '',
             sort: sortOption.value,
             page: props.books.current_page,
         },
@@ -83,9 +83,9 @@ const clearSearch = () => {
 
     <AppLayout>
         <div class="radial-gradient min-h-screen">
-            <div class="container mx-auto py-12">
+            <div class="container mx-auto py-3 lg:py-12">
                 <h1
-                    class="my-1 text-center font-serif text-6xl tracking-tight text-white drop-shadow-md"
+                    class="mb-6 text-center font-serif text-6xl tracking-tight text-white drop-shadow-md lg:my-2"
                 >
                     Featured Books
                 </h1>

@@ -12,7 +12,7 @@ const props = defineProps<{
             published_year: number;
             summary: string;
             cover_image: string;
-            isCheckedOut: number;
+            isCheckedOut: boolean;
         }>;
         current_page: number;
         last_page: number;
@@ -39,7 +39,7 @@ const returnBook = (bookId: number) => {
 <template>
     <AppLayout>
         <div class="w-full overflow-hidden rounded-lg border border-stone-200">
-            <div class="mx-auto max-w-7xl p-4">
+            <div class="mx-auto max-w-[550px] p-4">
                 <h1 class="py-5 text-2xl font-semibold text-stone-800">
                     Hey,
                     <span class="capitalize">{{
@@ -48,53 +48,56 @@ const returnBook = (bookId: number) => {
                     >!
                 </h1>
 
-                <table class="w-full border">
-                    <thead
-                        class="border-b border-stone-200 bg-stone-100 text-start text-sm font-medium text-stone-600"
-                    >
-                        <tr>
-                            <th class="px-2.5 py-2">Cover Image</th>
-                            <th class="px-2.5 py-2">Book Title</th>
-                            <th class="px-2.5 py-2">Author</th>
-
-                            <th class="px-2.5 py-2"></th>
-                        </tr>
-                    </thead>
+                <table class="border">
                     <tbody class="group text-sm text-stone-800">
                         <tr
                             v-for="book in props.books.data"
                             :key="book.id"
                             class="border-b border-stone-200 last:border-0"
                         >
-                            <td class="p-3">
+                            <td class="hidden p-3 md:block">
                                 <img
                                     :src="book.cover_image"
                                     alt="{{ props.book.title }}"
-                                    class="rounded-lg-t object-fit mb-2 h-24 w-auto overflow-hidden"
+                                    class="rounded-lg-t object-fit mb-2 h-auto w-auto overflow-hidden"
                                 />
                             </td>
-                            <td class="p-3">{{ book.title }}</td>
-                            <td class="p-3">{{ book.author }}</td>
+                            <td class="p-3">
+                                Title:<b>{{ book.title }}</b> <br />Author:<b>{{
+                                    book.author
+                                }}</b>
+                            </td>
 
                             <td class="p-3">
-                                <Link :href="route('books.edit', book.id)"
-                                    >Edit</Link
-                                >
-                                >
+                                {{
+                                    book.isCheckedOut
+                                        ? 'Checked Out'
+                                        : 'Available'
+                                }}
                                 <span v-if="book.isCheckedOut">
                                     <form
                                         @submit.prevent="returnBook(book.id)"
                                         method="POST"
-                                        class="inline-block"
+                                        class="inline-block leading-none"
                                     >
                                         <button
                                             type="submit"
-                                            class="ml-2 rounded-md bg-green-500 px-3 py-1 text-white"
+                                            class="rounded-md bg-green-500 px-3 py-1 text-white md:ml-2"
                                         >
                                             Return
                                         </button>
                                     </form>
                                 </span>
+                            </td>
+
+                            <td class="p-3">
+                                <button
+                                    class="ml-2 rounded-md bg-blue-900 px-3 py-1 text-white"
+                                >
+                                    <Link :href="route('books.edit', book.id)"
+                                        >Edit</Link
+                                    >
+                                </button>
                             </td>
                         </tr>
                     </tbody>
