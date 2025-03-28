@@ -14,8 +14,8 @@ const form = useForm({
     category: '',
     cover_image: '',
     isFeatured: false,
-    stock: '1',
-    available: '1',
+    stock: 1,
+    available: 1,
 });
 
 const submit = () => {
@@ -50,7 +50,7 @@ const submit = () => {
                         required
                     />
                     <p
-                        v-if="form.errors.title"
+                        v-if="form.errors?.title"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.title }}
@@ -71,7 +71,7 @@ const submit = () => {
                         required
                     />
                     <p
-                        v-if="form.errors.author"
+                        v-if="form.errors?.author"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.author }}
@@ -92,7 +92,7 @@ const submit = () => {
                         required
                     />
                     <p
-                        v-if="form.errors.category"
+                        v-if="form.errors?.category"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.category }}
@@ -115,7 +115,7 @@ const submit = () => {
                         max="2100"
                     />
                     <p
-                        v-if="form.errors.published_year"
+                        v-if="form.errors?.published_year"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.published_year }}
@@ -135,7 +135,7 @@ const submit = () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                     />
                     <p
-                        v-if="form.errors.publisher"
+                        v-if="form.errors?.publisher"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.publisher }}
@@ -155,7 +155,7 @@ const submit = () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                     />
                     <p
-                        v-if="form.errors.isbn"
+                        v-if="form.errors?.isbn"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.isbn }}
@@ -175,7 +175,7 @@ const submit = () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                     />
                     <p
-                        v-if="form.errors.page_count"
+                        v-if="form.errors?.page_count"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.page_count }}
@@ -194,7 +194,7 @@ const submit = () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                     ></textarea>
                     <p
-                        v-if="form.errors.summary"
+                        v-if="form.errors?.summary"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.summary }}
@@ -214,7 +214,7 @@ const submit = () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                     />
                     <p
-                        v-if="form.errors.cover_image"
+                        v-if="form.errors?.cover_image"
                         class="mt-1 text-xs text-red-600"
                     >
                         {{ form.errors.cover_image }}
@@ -225,9 +225,8 @@ const submit = () => {
                     <label
                         for="isFeatured"
                         class="block text-sm font-medium text-gray-700"
+                        >Featured</label
                     >
-                        Featured
-                    </label>
                     <input
                         id="isFeatured"
                         type="checkbox"
@@ -237,6 +236,48 @@ const submit = () => {
                     <span class="text-sm text-gray-500"
                         >Mark this book as featured</span
                     >
+                </div>
+
+                <div>
+                    <label
+                        for="stock"
+                        class="block text-sm font-medium text-gray-700"
+                        >Stock</label
+                    >
+                    <input
+                        id="stock"
+                        type="number"
+                        v-model="form.stock"
+                        class="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                        required
+                    />
+                    <p
+                        v-if="form.errors?.stock"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.stock }}
+                    </p>
+                </div>
+
+                <div>
+                    <label
+                        for="available"
+                        class="block text-sm font-medium text-gray-700"
+                        >Available</label
+                    >
+                    <input
+                        id="available"
+                        type="number"
+                        v-model="form.available"
+                        class="mt-1 block w-full rounded-md border border-gray-300 p-2"
+                        required
+                    />
+                    <p
+                        v-if="form.errors?.available"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.available }}
+                    </p>
                 </div>
 
                 <!-- Submit Button -->
