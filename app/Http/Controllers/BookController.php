@@ -12,9 +12,11 @@ class BookController
     public function index(Request $request)
     {
         $sort = $request->query('sort', 'created_at');
+        $search = $request->query('search');
 
         $booksQuery = Book::where('isFeatured', true);
 
+        // Sorting logic
         if ($sort == 'title') {
             $booksQuery->orderBy('title');
         } elseif ($sort == 'author') {
@@ -25,13 +27,27 @@ class BookController
             $booksQuery->orderBy('created_at', 'desc');
         }
 
+        // Searching logic
+        if ($search) {
+            $booksQuery->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                      ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+
         $books = $booksQuery->get();
+
 
         return Inertia::render('Books/Index', [
             'books' => [
                 'data' => $books,
+                'sortOption' => $sort,
+                'filters' => [
+                    'search' => $search,
+                    'sort' => $sort
+                ],
             ],
-            'currentSort' => $sort,
+            'noResults' => $books->isEmpty(),
         ]);
     }
 
