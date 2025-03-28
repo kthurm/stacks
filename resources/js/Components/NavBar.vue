@@ -18,7 +18,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="relative top-0 w-screen bg-white shadow-lg lg:sticky">
+    <div class="relative top-0 z-[100] w-screen bg-white shadow-lg lg:sticky">
         <div
             class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4"
         >
