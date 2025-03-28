@@ -12,6 +12,8 @@ const form = useForm({
     summary: '',
     category: '',
     cover_image: '',
+    stock: '1',
+    available: '1',
 });
 
 // Handle form submission
