@@ -18,16 +18,10 @@ const props = defineProps<{
     };
 }>();
 
-// Get the sort option from the URL query parameters
 const urlParams = new URLSearchParams(window.location.search);
-const initialSortOption = urlParams.get('sort') || 'created_at'; // Default to 'created_at'
-
-// Set up the sortOption state
-const sortOption = ref(initialSortOption); // Default sorting by 'created_at' to show latest book first
-
-// Watch for changes in sortOption and update the page URL to reflect sorting choice
+const initialSortOption = urlParams.get('sort') || 'created_at';
+const sortOption = ref(initialSortOption);
 watch(sortOption, (newSortOption) => {
-    // If reset is selected, clear the sort option from the URL
     if (newSortOption === 'reset') {
         window.location.href = `/books?page=${props.books.current_page}`;
     } else {
@@ -43,24 +37,22 @@ watch(sortOption, (newSortOption) => {
         <div class="radial-gradient">
             <div class="container mx-auto py-12">
                 <h1
-                    class="mb-10 text-center font-serif text-6xl tracking-tight text-white drop-shadow-md"
+                    class="my-1 text-center font-serif text-6xl tracking-tight text-white drop-shadow-md"
                 >
                     Featured Books
                 </h1>
 
-                <!-- Sort Dropdown -->
-                <div class="text-right">
-                    <!-- <label for="sort">Sort</label> -->
+                <div class="pr-4 text-right">
                     <select
                         id="sort"
                         v-model="sortOption"
-                        class="ml-2 rounded border-gray-300 p-2"
+                        class="w-[145px] rounded border-gray-300 bg-gray-100 p-1 pl-2"
                     >
-                        <option value="created_at">Default</option>
+                        <option value="created_at">Last Added</option>
                         <option value="title">Title A-Z</option>
                         <option value="published_year">Published Year</option>
                         <option value="author">Author A-Z</option>
-                        <option value="reset">Reset Sort</option>
+                        <!-- <option value="reset">Reset Sort</option> -->
                     </select>
                 </div>
 
@@ -87,8 +79,9 @@ watch(sortOption, (newSortOption) => {
                             <img
                                 :src="book.cover_image"
                                 alt="{{ props.book.title }}"
-                                class="rounded-lg-t mb-2 h-52 w-full overflow-hidden rounded-t-lg object-cover"
+                                class="rounded-lg-t mb-2 h-80 w-full overflow-hidden rounded-t-lg object-cover"
                             />
+
                             <div class="p-4">
                                 <h2 class="mb-2 text-lg font-bold leading-none">
                                     {{ book.title }}
@@ -100,22 +93,6 @@ watch(sortOption, (newSortOption) => {
                             </div>
                         </Link>
                     </div>
-                </div>
-
-                <!-- Pagination -->
-                <div v-if="props.books.last_page > 1" class="pagination">
-                    <Link
-                        v-if="props.books.current_page > 1"
-                        :href="`/books?page=${props.books.current_page - 1}&sort=${sortOption}`"
-                    >
-                        Previous
-                    </Link>
-                    <Link
-                        v-if="props.books.current_page < props.books.last_page"
-                        :href="`/books?page=${props.books.current_page + 1}&sort=${sortOption}`"
-                    >
-                        Next
-                    </Link>
                 </div>
             </div>
         </div>

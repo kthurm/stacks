@@ -13,23 +13,28 @@ class BookController
     {
         $sort = $request->query('sort', 'created_at');
 
+        $booksQuery = Book::where('isFeatured', true);
+
         if ($sort == 'title') {
-            $books = Book::orderBy('title')->paginate(20);
+            $booksQuery->orderBy('title');
         } elseif ($sort == 'author') {
-            $books = Book::orderBy('author')->paginate(20);
+            $booksQuery->orderBy('author');
         } elseif ($sort == 'published_year') {
-            $books = Book::orderBy('published_year')->paginate(20);
-        } elseif ($sort == 'created_at') {
-            $books = Book::orderBy('created_at', 'desc')->paginate(20);
+            $booksQuery->orderBy('published_year');
         } else {
-            $books = Book::orderBy('created_at', 'desc')->paginate(20);
+            $booksQuery->orderBy('created_at', 'desc');
         }
 
+        $books = $booksQuery->get();
+
         return Inertia::render('Books/Index', [
-            'books' => $books,
+            'books' => [
+                'data' => $books,
+            ],
             'currentSort' => $sort,
         ]);
     }
+
 
     public function dashboard()
     {
