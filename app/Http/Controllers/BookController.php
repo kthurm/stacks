@@ -104,19 +104,6 @@ class BookController
         return redirect()->back()->with('error', 'The book is not available for borrowing.');
     }
 
-    public function checkedOutBooks(Request $request)
-    {
-
-        $user = Auth::user();
-
-
-        $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
-
-
-        return Inertia::render('Books/CheckedOut', [
-            'checkedOutBooks' => $checkedOutBooks,
-        ]);
-    }
     public function edit(Book $book)
     {
         return Inertia::render('Books/Edit', [
@@ -124,6 +111,39 @@ class BookController
         ]);
     }
 
+    public function checkedOutBooks(Request $request)
+    {
+        $user = Auth::user();
+
+        // Debugging point
+        dd('hello');  // Check if this is being executed
+
+        $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
+
+        return Inertia::render('Books/Checkedout', [
+            'checkedOutBooks' => $checkedOutBooks,
+        ]);
+    }
+
+
+
+    public function returnBook(Request $request, $bookId)
+    {
+        $user = Auth::user();
+
+        $book = Book::findOrFail($bookId);
+
+        // Detach the book from the user's checked-out list
+        $user->books()->detach($bookId);
+
+        // Update the book's stock and availability
+        $book->isCheckedOut = false;
+        $book->available = true;
+        $book->stock += 1;
+        $book->save();
+
+        return redirect()->route('books')->with('success', 'Book returned successfully.');
+    }
 
     public function update(Request $request, Book $book)
     {
@@ -144,7 +164,7 @@ class BookController
         $book->update($validated);
 
 
-        return redirect()->route('books.show', $book->id)->with('success', 'Book updated successfully.');
+        return redirect()->route('dashboard')->with('success', 'Book updated successfully.');
     }
 
 
