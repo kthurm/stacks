@@ -34,7 +34,7 @@ const deleteBook = async () => {
 
 <template>
     <AppLayout>
-        <div class="container mx-auto p-6">
+        <div class="container mx-auto max-w-[500px] p-6">
             <h1 class="text-3xl font-semibold">Edit Book</h1>
 
             <form @submit.prevent="submit">
@@ -66,6 +66,80 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                </div>
+                <div class="mt-6">
+                    <label
+                        for="publisher"
+                        class="block text-sm font-medium text-gray-700"
+                        >Publisher</label
+                    >
+                    <input
+                        v-model="form.publisher"
+                        type="text"
+                        id="publisher"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
+                        required
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <label
+                        for="isbn"
+                        class="block text-sm font-medium text-gray-700"
+                        >Isbn</label
+                    >
+                    <input
+                        v-model="form.isbn"
+                        type="text"
+                        id="isbn"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
+                        required
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <label
+                        for="category"
+                        class="block text-sm font-medium text-gray-700"
+                        >Category</label
+                    >
+                    <input
+                        v-model="form.category"
+                        type="text"
+                        id="category"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
+                        required
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <label
+                        for="cover_image"
+                        class="block text-sm font-medium text-gray-700"
+                        >Cover_image</label
+                    >
+                    <input
+                        v-model="form.cover_image"
+                        type="text"
+                        id="cover_image"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
+                        required
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <label
+                        for="summary"
+                        class="block text-sm font-medium text-gray-700"
+                        >Summary</label
+                    >
+                    <textarea
+                        v-model="form.summary"
+                        name="summary"
+                        id="summary"
+                        rows="3"
+                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    ></textarea>
                 </div>
 
                 <div class="mt-6">
