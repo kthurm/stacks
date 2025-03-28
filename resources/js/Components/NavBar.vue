@@ -66,11 +66,13 @@ const props = defineProps({
                             >
                         </PrimaryButton>
                         <PrimaryButton>
-                            <Link :href="route('dashboard')">Dashboard</Link>
+                            <Link :href="route('dashboard')" preserve-state
+                                >Dashboard</Link
+                            >
                         </PrimaryButton>
                     </div>
                     <PrimaryButton>
-                        <Link :href="route('books.checkedOut')">
+                        <Link :href="route('books.checkedout')">
                             My Books
                         </Link>
                     </PrimaryButton>
