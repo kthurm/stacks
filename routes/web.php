@@ -17,14 +17,11 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('books', BookController::class);
 
-    Route::get('/books/checkedout', [BookController::class, 'checkedOutBooks'])->name('books.checkedout');
+    Route::get('/books/checkedOut', [BookController::class, 'checkedOutBooks'])->name('books.checkedOut');
     Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
 
     Route::post('/books/return/{bookId}', [BookController::class, 'returnBook'])->name('books.return');
 
-    // Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
-    // Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
-    // Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
 });
 
 Route::get('/dashboard', [BookController::class, 'dashboard'])

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { Inertia } from '@inertiajs/inertia';
 import { Link } from '@inertiajs/inertia-vue3';
 
 const props = defineProps<{
@@ -11,11 +12,29 @@ const props = defineProps<{
             published_year: number;
             summary: string;
             cover_image: string;
+            isCheckedOut: number;
         }>;
         current_page: number;
         last_page: number;
+        next_page_url: string | null;
+        prev_page_url: string | null;
     };
 }>();
+
+const returnBook = (bookId: number) => {
+    Inertia.post(
+        route('books.return', bookId),
+        {},
+        {
+            onFinish: () => {
+                console.log('it worked');
+            },
+            onError: (err) => {
+                console.error('Error returning book:', err);
+            },
+        },
+    );
+};
 </script>
 <template>
     <AppLayout>
@@ -62,10 +81,52 @@ const props = defineProps<{
                                     >Edit</Link
                                 >
                                 >
+                                <span v-if="book.isCheckedOut">
+                                    <form
+                                        @submit.prevent="returnBook(book.id)"
+                                        method="POST"
+                                        class="inline-block"
+                                    >
+                                        <button
+                                            type="submit"
+                                            class="ml-2 rounded-md bg-green-500 px-3 py-1 text-white"
+                                        >
+                                            Return
+                                        </button>
+                                    </form>
+                                </span>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Pagination Controls -->
+                <div class="mt-4 flex justify-between">
+                    <div>
+                        <Link
+                            v-if="props.books.prev_page_url"
+                            :href="props.books.prev_page_url"
+                            class="inline-block text-blue-500"
+                        >
+                            Previous
+                        </Link>
+                    </div>
+
+                    <div class="text-sm">
+                        Page {{ props.books.current_page }} of
+                        {{ props.books.last_page }}
+                    </div>
+
+                    <div>
+                        <Link
+                            v-if="props.books.next_page_url"
+                            :href="props.books.next_page_url"
+                            class="inline-block text-blue-500"
+                        >
+                            Next
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     </AppLayout>

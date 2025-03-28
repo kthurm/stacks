@@ -14,15 +14,15 @@ class BookController
         $sort = $request->query('sort', 'created_at');
 
         if ($sort == 'title') {
-            $books = Book::orderBy('title')->paginate(30);
+            $books = Book::orderBy('title')->paginate(20);
         } elseif ($sort == 'author') {
-            $books = Book::orderBy('author')->paginate(30);
+            $books = Book::orderBy('author')->paginate(20);
         } elseif ($sort == 'published_year') {
-            $books = Book::orderBy('published_year')->paginate(30);
+            $books = Book::orderBy('published_year')->paginate(20);
         } elseif ($sort == 'created_at') {
-            $books = Book::orderBy('created_at', 'desc')->paginate(30);
+            $books = Book::orderBy('created_at', 'desc')->paginate(20);
         } else {
-            $books = Book::orderBy('created_at', 'desc')->paginate(30);
+            $books = Book::orderBy('created_at', 'desc')->paginate(20);
         }
 
         return Inertia::render('Books/Index', [
@@ -33,7 +33,7 @@ class BookController
 
     public function dashboard()
     {
-        $books = Book::paginate(50);
+        $books = Book::paginate(40);
 
         return Inertia::render('Dashboard', [
             'books' => $books,
@@ -64,6 +64,8 @@ class BookController
             'summary' => ['nullable', 'string'],
             'category' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'url'],
+            'stock' => ['nullable', 'integer'],
+            'available' => ['nullable', 'integer'],
         ]);
 
 
@@ -115,35 +117,41 @@ class BookController
     {
         $user = Auth::user();
 
-        // Debugging point
-        dd('hello');  // Check if this is being executed
+
+        dd('hello');
 
         $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
 
-        return Inertia::render('Books/Checkedout', [
+        return Inertia::render('Books/CheckedOut', [
             'checkedOutBooks' => $checkedOutBooks,
         ]);
     }
-
 
 
     public function returnBook(Request $request, $bookId)
     {
         $user = Auth::user();
 
+        if ($user->role !== 'librarian') {
+            return redirect()->back()->with('error', 'You are not authorized to return books.');
+        }
+
         $book = Book::findOrFail($bookId);
 
-        // Detach the book from the user's checked-out list
-        $user->books()->detach($bookId);
+        if ($user->books()->wherePivot('book_id', $bookId)->exists()) {
+            $user->books()->detach($bookId);
 
-        // Update the book's stock and availability
-        $book->isCheckedOut = false;
-        $book->available = true;
-        $book->stock += 1;
-        $book->save();
+            $book->isCheckedOut = false;
+            $book->available = true;
+            $book->stock += 1;
+            $book->save();
 
-        return redirect()->route('books')->with('success', 'Book returned successfully.');
+            return Inertia::location(route('dashboard'))->with('success', 'Book returned successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Book was not checked out.');
     }
+
 
     public function update(Request $request, Book $book)
     {
