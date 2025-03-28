@@ -10,30 +10,24 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
 });
 
+// Protect all book-related routes with the auth middleware
+Route::middleware(['auth'])->group(function () {
+    Route::resource('books', BookController::class);
 
-Route::resource('books', BookController::class);
+    Route::get('/books/checkedout', [BookController::class, 'checkedOutBooks'])->name('books.checkedOut');
+    Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
+    Route::post('/books/return/{bookId}', [BookController::class, 'returnBook'])->name('books.return');
+    Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
+});
 
 Route::get('/dashboard', [BookController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
-Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
-
-
-Route::get('/books/checkedout', [BookController::class, 'checkedOutBooks'])->name('books.checkedOut');
-
-
-Route::post('/books/return/{bookId}', [BookController::class, 'returnBook'])->name('books.return');
-
-Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
-Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');
-Route::delete('/books/{book}', [BookController::class, 'destroy'])->name('books.destroy');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
