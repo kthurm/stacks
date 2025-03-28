@@ -12,50 +12,57 @@ Follow these steps to set up the Stacks Library App in your local development en
 
 Start by cloning the repository to your local machine:
 
-```bash
 git clone https://github.com/kthurm/stack
+
 cd stacks
-2. Install Dependencies
+
+### 2. Install Dependencies
 Next, install the required dependencies:
 
-bash
-Copy code
 composer install
+
 npm install
-3. Set Up the Environment File
+
+### 3. Set Up the Environment File
 Copy the .env.example file to .env:
 
-bash
-Copy code
 cp .env.example .env
+
 Open the .env file and set the following configurations:
 
-Database connection: Set to SQLite.
+### 4. Database connection: Set to SQLite.
 
 APP_URL: Set the application URL (e.g., http://stacks.test if running locally).
 
-4. Migrate the Database
+### 5. Migrate the Database
 Run the following command to migrate the database:
 
-bash
-Copy code
 php artisan migrate
-5. Seed the Database
+
+### 6. Seed the Database
 Seed the database with sample data:
 
-bash
-Copy code
 php artisan db:seed
-6. Run the Program
+
+(note you can also run php artisan migrate --seed)
+
+### 7. Run the Program
+If you have Herd, check your Herd projects.
+
+If using valet run:
+
+php artisan key
+
+valet link
+
 Start the development server by running:
 
-bash
-Copy code
 npm run dev
-Access the App
+
+### Access the App
 To access the app, you will need to register as a user.
 
-Librarian Dashboard
+### Librarian Dashboard
 The Librarian Dashboard provides the following features:
 
 View Books: See a list of all books in the library, including both checked-out and available books.
