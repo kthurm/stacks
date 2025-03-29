@@ -2,8 +2,9 @@
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Link } from '@inertiajs/inertia-vue3';
+import { Link } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
+import NavButtonLink from './NavButtonLink.vue';
 
 const props = defineProps({
     canLogin: {
@@ -60,16 +61,13 @@ const props = defineProps({
                         "
                         class="flex justify-end space-x-2"
                     >
-                        <PrimaryButton>
-                            <Link :href="route('books.create')"
-                                >Add New Book</Link
-                            >
-                        </PrimaryButton>
-                        <PrimaryButton>
-                            <Link :href="route('dashboard')" preserve-state
-                                >Dashboard</Link
-                            >
-                        </PrimaryButton>
+                        <NavButtonLink :href="route('books.create')"
+                            >Add New Book
+                        </NavButtonLink>
+
+                        <NavButtonLink :href="route('dashboard')" preserve-state
+                            >Dashboard
+                        </NavButtonLink>
                     </div>
                 </nav>
             </div>

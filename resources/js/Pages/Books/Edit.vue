@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Inertia } from '@inertiajs/inertia';
-import { useForm } from '@inertiajs/inertia-vue3';
+
+import { router, useForm } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 
 const props = defineProps({
@@ -18,16 +18,19 @@ const form = useForm({
     summary: props.book.summary,
     category: props.book.category,
     cover_image: props.book.cover_image,
+    isFeatured: props.book.isFeatured === 1 ? 'Yes' : 'No',
 });
 
 const submit = () => {
+    form.isFeatured = form.isFeatured === 'Yes' ? 1 : 0;
+
     form.put(route('books.update', props.book.id));
 };
 
 const deleteBook = async () => {
     if (confirm('Are you sure you want to delete this book?')) {
         await axios.delete(route('books.destroy', props.book.id));
-        Inertia.visit(route('dashboard'), { preserveState: false });
+        router.visit(route('dashboard'), { preserveState: false });
     }
 };
 </script>
@@ -155,6 +158,31 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                </div>
+                <div class="mt-6">
+                    <label class="block text-sm font-medium text-gray-700"
+                        >Is Featured</label
+                    >
+                    <div class="flex items-center">
+                        <input
+                            v-model="form.isFeatured"
+                            type="radio"
+                            value="Yes"
+                            id="featuredYes"
+                            name="isFeatured"
+                            class="mr-2"
+                        />
+                        <label for="featuredYes" class="mr-4">Yes</label>
+                        <input
+                            v-model="form.isFeatured"
+                            type="radio"
+                            value="No"
+                            id="featuredNo"
+                            name="isFeatured"
+                            class="mr-2"
+                        />
+                        <label for="featuredNo">No</label>
+                    </div>
                 </div>
 
                 <div class="mt-6">

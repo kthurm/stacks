@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Inertia } from '@inertiajs/inertia';
-import { Link } from '@inertiajs/inertia-vue3';
+import { Link, router } from '@inertiajs/vue3';
 
 const props = defineProps<{
     books: {
@@ -22,7 +21,7 @@ const props = defineProps<{
 }>();
 
 const returnBook = (bookId: number) => {
-    Inertia.post(
+    router.post(
         route('books.return', bookId),
         {},
         {

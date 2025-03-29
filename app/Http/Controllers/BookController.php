@@ -89,6 +89,7 @@ class BookController
             'cover_image' => ['nullable', 'string', 'url'],
             'stock' => ['nullable', 'integer'],
             'available' => ['nullable', 'integer'],
+            'isFeatured' => ['nullable', 'boolean']
         ]);
 
 
@@ -189,6 +190,7 @@ class BookController
             'summary' => ['nullable', 'string'],
             'category' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'url'],
+            'isFeatured' => ['nullable', 'boolean']
         ]);
 
 

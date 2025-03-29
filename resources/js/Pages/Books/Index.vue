@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Inertia } from '@inertiajs/inertia';
-import { Head, Link } from '@inertiajs/inertia-vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
 
@@ -29,7 +28,7 @@ let search = ref(props.books.filters.search || '');
 let sortOption = ref(props.books.filters.sort || 'created_at');
 
 const debouncedSearch = debounce(() => {
-    Inertia.get(
+    router.get(
         route('books.index'),
         {
             search: search.value,
@@ -48,7 +47,7 @@ watch(search, () => {
 });
 
 watch(sortOption, () => {
-    Inertia.get(
+    router.get(
         route('books.index'),
         {
             search: search.value,
@@ -63,7 +62,7 @@ watch(sortOption, () => {
 });
 const clearSearch = () => {
     search.value = '';
-    Inertia.get(
+    router.get(
         route('books.index'),
         {
             search: '',

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Inertia } from '@inertiajs/inertia';
-import { Head, useForm } from '@inertiajs/inertia-vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     title: '',
@@ -21,8 +20,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('books.store'), {
         onFinish: () => {
-            if (!form.errors.length) {
-                Inertia.visit(route('dashboard'));
+            if (!form.errors) {
+                router.visit('dashboard');
             }
         },
     });
