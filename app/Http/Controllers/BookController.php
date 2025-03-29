@@ -169,7 +169,7 @@ class BookController
             $book->stock += 1;
             $book->save();
 
-            return Inertia::location(route('dashboard'))->with('success', 'Book returned successfully.');
+
         }
 
         return redirect()->back()->with('error', 'Book was not checked out.');
