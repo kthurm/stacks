@@ -30,7 +30,6 @@
         "vue-tsc": "^2.0.24"
     },
     "dependencies": {
-        "@inertiajs/inertia-vue3": "^0.6.0",
         "lodash": "^4.17.21"
     }
 }
