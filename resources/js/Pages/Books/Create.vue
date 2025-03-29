@@ -12,7 +12,7 @@ const form = useForm({
     summary: '',
     category: '',
     cover_image: '',
-    isFeatured: '',
+    isFeatured: false,
     stock: 1,
     available: 1,
 });
@@ -20,8 +20,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('books.store'), {
         onFinish: () => {
-            if (!form.errors.length) {
-                router.replace('dashboard');
+            if (!form.errors) {
+                router.visit('dashboard');
             }
         },
     });
