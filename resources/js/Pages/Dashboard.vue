@@ -13,6 +13,9 @@ const props = defineProps<{
             cover_image: string;
             isCheckedOut: boolean;
         }>;
+        user: {
+            role: string;
+        };
         current_page: number;
         last_page: number;
         next_page_url: string | null;
