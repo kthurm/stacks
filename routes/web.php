@@ -20,7 +20,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/books/checkedOut', [BookController::class, 'checkedOutBooks'])->name('books.checkedOut');
     Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
 
-    Route::post('/books/return/{bookId}', [BookController::class, 'returnBook'])->name('books.return');
+    Route::post('/books/{bookId}/return', [BookController::class, 'returnBook'])->name('books.return');
+
 
 });
 

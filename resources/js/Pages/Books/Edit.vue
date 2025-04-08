@@ -1,5 +1,5 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import RestrictedLayout from '@/Layouts/RestrictedLayout.vue';
 
 import { router, useForm } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
@@ -36,7 +36,7 @@ const deleteBook = async () => {
 </script>
 
 <template>
-    <AppLayout>
+    <RestrictedLayout>
         <div class="container mx-auto max-w-[500px] p-6">
             <h1 class="text-3xl font-semibold">Edit Book</h1>
 
@@ -54,6 +54,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.title"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.title }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -69,6 +75,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.author"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.author }}
+                    </p>
                 </div>
                 <div class="mt-6">
                     <label
@@ -83,6 +95,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.publisher"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.publisher }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -98,6 +116,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.isbn"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.isbn }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -113,6 +137,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.category"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.category }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -128,6 +158,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.cover_image"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.cover_image }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -143,6 +179,12 @@ const deleteBook = async () => {
                         rows="3"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     ></textarea>
+                    <p
+                        v-if="form.errors?.summary"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.summary }}
+                    </p>
                 </div>
 
                 <div class="mt-6">
@@ -158,6 +200,12 @@ const deleteBook = async () => {
                         class="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2"
                         required
                     />
+                    <p
+                        v-if="form.errors?.published_year"
+                        class="mt-1 text-xs text-red-600"
+                    >
+                        {{ form.errors.published_year }}
+                    </p>
                 </div>
                 <div class="mt-6">
                     <label class="block text-sm font-medium text-gray-700"
@@ -202,5 +250,5 @@ const deleteBook = async () => {
                 Delete Book
             </button>
         </div>
-    </AppLayout>
+    </RestrictedLayout>
 </template>
