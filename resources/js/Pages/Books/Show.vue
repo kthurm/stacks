@@ -33,7 +33,7 @@ const form = useForm({
     user_id: '',
 });
 
-function borrowBook() {
+const borrowBook = () => {
     form.submit('post', route('books.borrow', props.book.id), {
         onSuccess: (response) => {
             console.log('Success response:', response);
@@ -44,7 +44,7 @@ function borrowBook() {
             alert(flash.error || 'Something went wrong, please try again.');
         },
     });
-}
+};
 </script>
 
 <template>
