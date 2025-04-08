@@ -106,16 +106,11 @@ class BookController
 
     public function borrow(Request $request, $bookId)
     {
-
         $user = Auth::user();
-
-
         $book = Book::findOrFail($bookId);
 
         if ($book->available && $book->stock > 0) {
-
             $user->books()->attach($bookId, ['isCheckedOut' => true]);
-
 
             $book->isCheckedOut = true;
             $book->available = false;
@@ -123,12 +118,16 @@ class BookController
             $book->save();
 
 
-            return Inertia::location(route('books.show', $bookId));
+            return Inertia::render('Books/Show', [
+                'book' => $book,
+                'user' => $user,
+                'flash' => session('success'),
+            ]);
         }
-
 
         return redirect()->back()->with('error', 'The book is not available for borrowing.');
     }
+
 
     public function edit(Book $book)
     {
@@ -137,19 +136,19 @@ class BookController
         ]);
     }
 
-    public function checkedOutBooks(Request $request)
-    {
-        $user = Auth::user();
+    // public function checkedOutBooks(Request $request)
+    // {
+    //     $user = Auth::user();
 
 
-        dd('hello');
+    //     dd('hello');
 
-        $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
+    //     $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
 
-        return Inertia::render('Books/CheckedOut', [
-            'checkedOutBooks' => $checkedOutBooks,
-        ]);
-    }
+    //     return Inertia::render('Books/CheckedOut', [
+    //         'checkedOutBooks' => $checkedOutBooks,
+    //     ]);
+    // }
 
 
     public function returnBook(Request $request, $bookId)
