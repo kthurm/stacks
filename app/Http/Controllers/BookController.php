@@ -181,14 +181,14 @@ class BookController
     {
 
         $validated = $request->validate([
-            'title' => ['required', 'max:255'],
+            'title' => ['required', 'min:5' ,'max:255'],
             'author' => ['required', 'max:255'],
             'published_year' => ['required', 'integer'],
-            'publisher' => ['nullable', 'string'],
-            'isbn' => ['nullable', 'string'],
-            'page_count' => ['nullable', 'integer'],
-            'summary' => ['nullable', 'string'],
-            'category' => ['nullable', 'string'],
+            'publisher' => ['required', 'string'],
+            'isbn' => ['required', 'string'],
+            'page_count' => ['required', 'integer'],
+            'summary' => ['required', 'string'],
+            'category' => ['required', 'string'],
             'cover_image' => ['nullable', 'string', 'url'],
             'isFeatured' => ['nullable', 'boolean']
         ]);
