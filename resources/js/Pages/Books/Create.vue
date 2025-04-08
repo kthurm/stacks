@@ -45,6 +45,7 @@ const submit = () => {
                         id="title"
                         type="text"
                         v-model="form.title"
+                        v-on:focus="form.clearErrors('title')"
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                         required
                     />
