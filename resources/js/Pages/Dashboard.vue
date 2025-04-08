@@ -65,9 +65,8 @@ const returnBook = (bookId: number) => {
                                 />
                             </td>
                             <td class="p-3">
-                                Title:<b>{{ book.title }}</b> <br />Author:<b>{{
-                                    book.author
-                                }}</b>
+                                Title: <b>{{ book.title }}</b> <br />Author:
+                                <b>{{ book.author }}</b>
                             </td>
 
                             <td class="p-3">
