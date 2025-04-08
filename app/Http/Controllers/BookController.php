@@ -58,7 +58,9 @@ class BookController
 
 
         return Inertia::render('Dashboard', [
-            'books' => $books
+            'books' => $books,
+
+
         ]);
 
     }
@@ -158,16 +160,13 @@ class BookController
 
         // Check if the user is a librarian
         if ($user->role !== 'librarian') {
-            // Only allow users who have checked out the book to return it
             if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
                 return redirect()->back()->with('error', 'You cannot return this book.');
             }
         }
 
-        // Detach the book from the user's borrowed books
         $user->books()->detach($bookId);
 
-        // Update the book's status
         $book->isCheckedOut = false;
         $book->available = true;
         $book->stock += 1;

@@ -15,7 +15,7 @@ const props = defineProps<{
             cover_image: string;
             isCheckedOut: boolean;
         }>;
-        user?: {
+        user: {
             role: string;
         };
         current_page: number;
@@ -31,19 +31,11 @@ function returnBook(bookId: number) {
         {},
         {
             onSuccess: (response) => {
-                console.log('Success response:', response);
-                if (props.books.user?.role === 'librarian') {
-                    alert(flash.success || 'Book Returned!');
-                    router.visit(route('dashboard'), {
-                        preserveState: true,
-                        replace: true,
-                    });
-                } else {
-                    alert(
-                        flash.success ||
-                            'Sorry, but only a librarian can return books',
-                    );
-                }
+                alert(flash.success || 'Book Returned!');
+                router.visit(route('dashboard'), {
+                    preserveState: true,
+                    replace: true,
+                });
             },
             onError: (errors) => {
                 console.log('Error response:', errors);
