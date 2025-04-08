@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
+
+const { flash } = usePage().props;
 
 const props = defineProps<{
     books: {
@@ -13,7 +15,7 @@ const props = defineProps<{
             cover_image: string;
             isCheckedOut: boolean;
         }>;
-        user: {
+        user?: {
             role: string;
         };
         current_page: number;
@@ -23,20 +25,33 @@ const props = defineProps<{
     };
 }>();
 
-const returnBook = (bookId: number) => {
+function returnBook(bookId: number) {
     router.post(
         route('books.return', bookId),
         {},
         {
-            onFinish: () => {
-                console.log('it worked');
+            onSuccess: (response) => {
+                console.log('Success response:', response);
+                if (props.books.user?.role === 'librarian') {
+                    alert(flash.success || 'Book Returned!');
+                    router.visit(route('dashboard'), {
+                        preserveState: true,
+                        replace: true,
+                    });
+                } else {
+                    alert(
+                        flash.success ||
+                            'Sorry, but only a librarian can return books',
+                    );
+                }
             },
-            onError: (err) => {
-                console.error('Error returning book:', err);
+            onError: (errors) => {
+                console.log('Error response:', errors);
+                alert(flash.error || 'Something went wrong, please try again.');
             },
         },
     );
-};
+}
 </script>
 <template>
     <AppLayout>
