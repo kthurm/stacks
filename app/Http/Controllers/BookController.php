@@ -121,7 +121,7 @@ class BookController
             return Inertia::render('Books/Show', [
                 'book' => $book,
                 'user' => $user,
-                'flash' => session('success'),
+
             ]);
         }
 
