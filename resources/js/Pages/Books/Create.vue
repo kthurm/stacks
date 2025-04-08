@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@/Layouts/AppLayout.vue';
+import RestrictedLayout from '@/Layouts/RestrictedLayout.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 
 const { flash } = usePage().props;
@@ -35,7 +35,7 @@ const submit = () => {
 
 <template>
     <Head title="Create a New Book" />
-    <AppLayout>
+    <RestrictedLayout>
         <div class="container mx-auto mt-5 max-w-3xl border p-4 shadow">
             <h1 class="my-5 text-4xl">Add a Book</h1>
 
@@ -296,5 +296,5 @@ const submit = () => {
                 </div>
             </form>
         </div>
-    </AppLayout>
+    </RestrictedLayout>
 </template>

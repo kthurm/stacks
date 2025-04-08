@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@/Layouts/AppLayout.vue';
+import RestrictedLayout from '@/Layouts/RestrictedLayout.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 
 const { flash } = usePage().props;
@@ -25,7 +25,7 @@ const props = defineProps<{
     };
 }>();
 
-function returnBook(bookId: number) {
+const returnBook = (bookId: number) => {
     router.post(
         route('books.return', bookId),
         {},
@@ -43,10 +43,10 @@ function returnBook(bookId: number) {
             },
         },
     );
-}
+};
 </script>
 <template>
-    <AppLayout>
+    <RestrictedLayout>
         <div class="w-full overflow-hidden rounded-lg border border-stone-200">
             <div class="mx-auto max-w-[550px] p-4">
                 <h1 class="py-5 text-2xl font-semibold text-stone-800">
@@ -140,5 +140,5 @@ function returnBook(bookId: number) {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </RestrictedLayout>
 </template>

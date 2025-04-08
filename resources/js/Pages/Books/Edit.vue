@@ -1,5 +1,5 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import RestrictedLayout from '@/Layouts/RestrictedLayout.vue';
 
 import { router, useForm } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
@@ -36,7 +36,7 @@ const deleteBook = async () => {
 </script>
 
 <template>
-    <AppLayout>
+    <RestrictedLayout>
         <div class="container mx-auto max-w-[500px] p-6">
             <h1 class="text-3xl font-semibold">Edit Book</h1>
 
@@ -250,5 +250,5 @@ const deleteBook = async () => {
                 Delete Book
             </button>
         </div>
-    </AppLayout>
+    </RestrictedLayout>
 </template>
