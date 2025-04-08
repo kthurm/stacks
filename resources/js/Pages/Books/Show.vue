@@ -21,6 +21,9 @@ const props = defineProps<{
         available: boolean;
         stock: number;
         isbn: string;
+        borrowed_at: string | null;
+        due_date: string | null;
+        isCheckedOut: boolean;
     };
 
     user: {
@@ -77,6 +80,21 @@ const borrowBook = () => {
                             : 'Unavailable'
                     }}
                 </PrimaryButton>
+                <div v-if="book.borrowed_at && book.due_date">
+                    <p class="mt-2 text-xs">
+                        Due Date:
+                        {{
+                            new Date(book.due_date).toLocaleDateString(
+                                'en-US',
+                                {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                },
+                            )
+                        }}
+                    </p>
+                </div>
             </div>
 
             <div class="my-3">
