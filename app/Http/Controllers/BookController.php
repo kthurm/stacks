@@ -154,25 +154,26 @@ class BookController
     public function returnBook(Request $request, $bookId)
     {
         $user = Auth::user();
-
-        if ($user->role !== 'librarian') {
-            return redirect()->back()->with('error', 'You are not authorized to return books.');
-        }
-
         $book = Book::findOrFail($bookId);
 
-        if ($user->books()->wherePivot('book_id', $bookId)->exists()) {
-            $user->books()->detach($bookId);
-
-            $book->isCheckedOut = false;
-            $book->available = true;
-            $book->stock += 1;
-            $book->save();
-
-
+        // Check if the user is a librarian
+        if ($user->role !== 'librarian') {
+            // Only allow users who have checked out the book to return it
+            if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
+                return redirect()->back()->with('error', 'You cannot return this book.');
+            }
         }
 
-        return redirect()->back()->with('error', 'Book was not checked out.');
+        // Detach the book from the user's borrowed books
+        $user->books()->detach($bookId);
+
+        // Update the book's status
+        $book->isCheckedOut = false;
+        $book->available = true;
+        $book->stock += 1;
+        $book->save();
+
+        return redirect()->back()->with('success', 'Book returned successfully.');
     }
 
 
