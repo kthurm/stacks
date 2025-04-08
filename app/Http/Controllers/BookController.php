@@ -58,7 +58,9 @@ class BookController
 
 
         return Inertia::render('Dashboard', [
-            'books' => $books
+            'books' => $books,
+
+
         ]);
 
     }
@@ -78,18 +80,18 @@ class BookController
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => ['required', 'max:255'],
+            'title' => ['required', 'min:5', 'max:255'],
             'author' => ['required', 'max:255'],
             'published_year' => ['required', 'integer'],
-            'publisher' => ['nullable', 'string'],
-            'isbn' => ['nullable', 'string'],
-            'page_count' => ['nullable', 'integer'],
-            'summary' => ['nullable', 'string'],
-            'category' => ['nullable', 'string'],
-            'cover_image' => ['nullable', 'string', 'url'],
-            'stock' => ['nullable', 'integer'],
-            'available' => ['nullable', 'integer'],
-            'isFeatured' => ['nullable', 'boolean']
+            'publisher' => ['required', 'string'],
+            'isbn' => ['required', 'string'],
+            'page_count' => ['required', 'integer'],
+            'summary' => ['required', 'string'],
+            'category' => ['required', 'string'],
+            'cover_image' => ['required', 'string', 'url'],
+            'stock' => ['required', 'integer'],
+            'available' => ['integer'],
+            'isFeatured' => ['boolean']
         ]);
 
 
@@ -106,16 +108,11 @@ class BookController
 
     public function borrow(Request $request, $bookId)
     {
-
         $user = Auth::user();
-
-
         $book = Book::findOrFail($bookId);
 
         if ($book->available && $book->stock > 0) {
-
             $user->books()->attach($bookId, ['isCheckedOut' => true]);
-
 
             $book->isCheckedOut = true;
             $book->available = false;
@@ -123,12 +120,16 @@ class BookController
             $book->save();
 
 
-            return Inertia::location(route('books.show', $bookId));
-        }
+            return Inertia::render('Books/Show', [
+                'book' => $book,
+                'user' => $user,
 
+            ]);
+        }
 
         return redirect()->back()->with('error', 'The book is not available for borrowing.');
     }
+
 
     public function edit(Book $book)
     {
@@ -137,43 +138,41 @@ class BookController
         ]);
     }
 
-    public function checkedOutBooks(Request $request)
-    {
-        $user = Auth::user();
+    // public function checkedOutBooks(Request $request)
+    // {
+    //     $user = Auth::user();
 
 
-        dd('hello');
+    //     dd('hello');
 
-        $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
+    //     $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
 
-        return Inertia::render('Books/CheckedOut', [
-            'checkedOutBooks' => $checkedOutBooks,
-        ]);
-    }
+    //     return Inertia::render('Books/CheckedOut', [
+    //         'checkedOutBooks' => $checkedOutBooks,
+    //     ]);
+    // }
 
 
     public function returnBook(Request $request, $bookId)
     {
         $user = Auth::user();
-
-        if ($user->role !== 'librarian') {
-            return redirect()->back()->with('error', 'You are not authorized to return books.');
-        }
-
         $book = Book::findOrFail($bookId);
 
-        if ($user->books()->wherePivot('book_id', $bookId)->exists()) {
-            $user->books()->detach($bookId);
-
-            $book->isCheckedOut = false;
-            $book->available = true;
-            $book->stock += 1;
-            $book->save();
-
-
+        // Check if the user is a librarian
+        if ($user->role !== 'librarian') {
+            if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
+                return redirect()->back()->with('error', 'You cannot return this book.');
+            }
         }
 
-        return redirect()->back()->with('error', 'Book was not checked out.');
+        $user->books()->detach($bookId);
+
+        $book->isCheckedOut = false;
+        $book->available = true;
+        $book->stock += 1;
+        $book->save();
+
+        return redirect()->back()->with('success', 'Book returned successfully.');
     }
 
 
@@ -181,14 +180,14 @@ class BookController
     {
 
         $validated = $request->validate([
-            'title' => ['required', 'max:255'],
+            'title' => ['required', 'min:5' ,'max:255'],
             'author' => ['required', 'max:255'],
             'published_year' => ['required', 'integer'],
-            'publisher' => ['nullable', 'string'],
-            'isbn' => ['nullable', 'string'],
-            'page_count' => ['nullable', 'integer'],
-            'summary' => ['nullable', 'string'],
-            'category' => ['nullable', 'string'],
+            'publisher' => ['required', 'string'],
+            'isbn' => ['required', 'string'],
+            'page_count' => ['required', 'integer'],
+            'summary' => ['required', 'string'],
+            'category' => ['required', 'string'],
             'cover_image' => ['nullable', 'string', 'url'],
             'isFeatured' => ['nullable', 'boolean']
         ]);

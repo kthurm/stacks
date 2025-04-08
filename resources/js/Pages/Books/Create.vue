@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 
+const { flash } = usePage().props;
 const form = useForm({
     title: '',
     author: '',
@@ -19,10 +20,14 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('books.store'), {
-        onFinish: () => {
-            if (!form.errors) {
-                router.visit('dashboard');
-            }
+        onSuccess: (response) => {
+            console.log('Success response:', response);
+            alert(flash.success || 'Book created successfully!');
+            router.visit('dashboard');
+        },
+        onError: (errors) => {
+            console.log('Error response:', errors);
+            alert(flash.error || 'Something went wrong, please try again.');
         },
     });
 };
@@ -45,6 +50,7 @@ const submit = () => {
                         id="title"
                         type="text"
                         v-model="form.title"
+                        v-on:focus="form.clearErrors('title')"
                         class="mt-1 block w-full rounded-md border border-gray-300 p-2"
                         required
                     />
