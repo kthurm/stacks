@@ -60,7 +60,6 @@ class BookController
         return Inertia::render('Dashboard', [
             'books' => $books,
 
-
         ]);
 
     }
@@ -110,6 +109,8 @@ class BookController
     {
         $user = Auth::user();
         $book = Book::findOrFail($bookId);
+        $borrowedAt = now();
+        $dueDate = now()->addDays(5);
 
         if ($book->available && $book->stock > 0) {
             $user->books()->attach($bookId, ['isCheckedOut' => true]);
@@ -117,6 +118,8 @@ class BookController
             $book->isCheckedOut = true;
             $book->available = false;
             $book->stock -= 1;
+            $book->borrowed_at = $borrowedAt;
+            $book->due_date = $dueDate;
             $book->save();
 
 
