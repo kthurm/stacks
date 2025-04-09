@@ -15,6 +15,7 @@ const submitRating = (bookId, rating) => {
 
     const form = useForm({
         rating: rating,
+        review: review,
     });
 
     form.post(route('userbooks.rate', bookId), {
@@ -59,20 +60,20 @@ const submitReview = (bookId, review) => {
                 <div
                     v-for="book in books"
                     :key="book.id"
-                    class="flex w-60 flex-col justify-between border p-3 md:w-72"
+                    class="flex w-60 flex-col justify-between border p-3 shadow-lg md:w-72"
                 >
-                    <div class="mx-auto mt-4">
+                    <div class="mx-auto mt-4 flex flex-col items-center">
                         <img
                             :src="book.cover_image"
                             alt="{{ book.title }}"
                             class="object-fit mx-auto w-48 shadow-xl"
                         />
 
-                        <h2 class="my-3 text-sm font-bold">{{ book.title }}</h2>
-                    </div>
-                    <div class="mx-auto">
+                        <h2 class="my-3 text-center text-sm font-bold">
+                            {{ book.title }}
+                        </h2>
                         <div v-if="book.borrowed_at && book.due_date">
-                            <p class="my-3 text-sm">
+                            <p class="text-sm">
                                 Due Date:
                                 {{
                                     new Date(book.due_date).toLocaleDateString(
@@ -86,11 +87,12 @@ const submitReview = (bookId, review) => {
                                 }}
                             </p>
                         </div>
-
-                        <p v-if="book.review">{{ book.review }}</p>
+                    </div>
+                    <div class="my-3 flex flex-col items-center">
+                        <p v-if="book.review">Your review: {{ book.review }}</p>
 
                         <!-- Rating Form -->
-                        <div class="mt-2 flex space-x-1">
+                        <div class="mb-3 flex space-x-1">
                             <template v-for="i in 5" :key="i">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -112,12 +114,11 @@ const submitReview = (bookId, review) => {
                         <textarea
                             v-model="book.review"
                             placeholder="Write your review"
-                            class="my-3 mt-2 w-full rounded border p-2"
+                            class="mb-5 mt-3 w-full rounded border p-2"
                         ></textarea>
                         <PrimaryButton
                             @click="submitReview(book.id, book.review)"
                             preserve-scroll
-                            class="mx-auto"
                         >
                             Submit Review
                         </PrimaryButton>
