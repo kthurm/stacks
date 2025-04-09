@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import NavLink from '@/Components/NavLink.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Link } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 import NavButtonLink from './NavButtonLink.vue';
 
@@ -36,6 +34,10 @@ const props = defineProps({
                 >
                     <div class="flex justify-end space-x-2">
                         <NavLink :href="route('books.index')">Books</NavLink>
+                        <NavLink :href="route('userbooks.index')"
+                            >My Books</NavLink
+                        >
+
                         <NavLink
                             v-if="$page.props.user"
                             :href="route('logout')"
