@@ -143,28 +143,34 @@ class BookController
 
 
     public function returnBook(Request $request, $bookId)
-    {
-        $user = Auth::user();
-        $book = Book::findOrFail($bookId);
+{
+    $user = Auth::user();
+    $book = Book::findOrFail($bookId);
 
-        if ($user->role !== 'librarian') {
-            if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
-                return redirect()->back()->with('error', 'You cannot return this book.');
-            }
+    // If the user is not a librarian, only allow return if they have the book
+    if ($user->role !== 'librarian') {
+        if (!$user->books()->wherePivot('book_id', $bookId)->wherePivot('isCheckedOut', true)->exists()) {
+            return redirect()->back()->with('error', 'You cannot return this book.');
         }
 
-        $user->books()->detach($bookId);
+        $user->books()->updateExistingPivot($bookId, ['isCheckedOut' => false]);
+    } else {
 
-        $book->isCheckedOut = false;
-        $book->available = true;
-        $book->stock += 1;
-        $book->due_date = null;
-        $book->save();
-
-
-
-        return redirect()->back()->with('success', 'Book returned successfully.');
+        \DB::table('book_user')
+            ->where('book_id', $bookId)
+            ->where('isCheckedOut', true)
+            ->update(['isCheckedOut' => false]);
     }
+
+
+    $book->isCheckedOut = false;
+    $book->available = true;
+    $book->stock += 1;
+    $book->due_date = null;
+    $book->save();
+
+    return redirect()->back()->with('success', 'Book returned successfully.');
+}
 
 
     public function update(Request $request, Book $book)
