@@ -141,27 +141,12 @@ class BookController
         ]);
     }
 
-    // public function checkedOutBooks(Request $request)
-    // {
-    //     $user = Auth::user();
-
-
-    //     dd('hello');
-
-    //     $checkedOutBooks = $user->books()->wherePivot('isCheckedOut', true)->get();
-
-    //     return Inertia::render('Books/CheckedOut', [
-    //         'checkedOutBooks' => $checkedOutBooks,
-    //     ]);
-    // }
-
 
     public function returnBook(Request $request, $bookId)
     {
         $user = Auth::user();
         $book = Book::findOrFail($bookId);
 
-        // Check if the user is a librarian
         if ($user->role !== 'librarian') {
             if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
                 return redirect()->back()->with('error', 'You cannot return this book.');
@@ -173,7 +158,10 @@ class BookController
         $book->isCheckedOut = false;
         $book->available = true;
         $book->stock += 1;
+        $book->due_date = null;
         $book->save();
+
+
 
         return redirect()->back()->with('success', 'Book returned successfully.');
     }
