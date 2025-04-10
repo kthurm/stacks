@@ -33,7 +33,7 @@ class Book extends Model
 
 
     public function users() {
-        return $this->belongsToMany(User::class)->withPivot('is_checked_out', )->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('isCheckedOut', )->withTimestamps();
     }
 
 
