@@ -7,7 +7,7 @@ import { ref } from 'vue';
 const props = defineProps({
     books: Array,
 });
-
+const reviewInputs = ref({});
 const books = ref(props.books);
 
 const submitRating = (bookId, rating) => {
@@ -15,7 +15,6 @@ const submitRating = (bookId, rating) => {
 
     const form = useForm({
         rating: rating,
-        review: review,
     });
 
     form.post(route('userbooks.rate', bookId), {
@@ -33,15 +32,17 @@ const submitRating = (bookId, rating) => {
     });
 };
 const submitReview = (bookId, review) => {
-    const form = useForm();
-    form.post(route('userbooks.review', bookId), {
+    const form = useForm({
         review: review,
+    });
+    console.log('Submitting review:', review);
+    form.post(route('userbooks.review', bookId), {
         onSuccess: () => {
-            const book = books.value.find((book) => book.id === bookId);
-            if (book) {
-                book.review = review;
-            }
             alert('Review submitted!');
+        },
+        onError: (errors) => {
+            console.error(errors);
+            alert('There was an error submitting the review: ' + errors.review);
         },
     });
 };
@@ -89,8 +90,6 @@ const submitReview = (bookId, review) => {
                         </div>
                     </div>
                     <div class="my-3 flex flex-col items-center">
-                        <p v-if="book.review">Your review: {{ book.review }}</p>
-
                         <!-- Rating Form -->
                         <div class="mb-3 flex space-x-1">
                             <template v-for="i in 5" :key="i">
@@ -111,13 +110,18 @@ const submitReview = (bookId, review) => {
                         </div>
 
                         <!-- Review Form -->
+
                         <textarea
-                            v-model="book.review"
-                            placeholder="Write your review"
-                            class="mb-5 mt-3 w-full rounded border p-2"
+                            v-model="reviewInputs[book.id]"
+                            placeholder="Write your review here..."
+                            class="my-4 w-full rounded border p-2"
+                            rows="3"
                         ></textarea>
+
                         <PrimaryButton
-                            @click="submitReview(book.id, book.review)"
+                            @click="
+                                submitReview(book.id, reviewInputs[book.id])
+                            "
                             preserve-scroll
                         >
                             Submit Review
