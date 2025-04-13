@@ -68,6 +68,20 @@ class BookController
     {
         return Inertia::render('Books/Show', [
             'book' => $book,
+            'reviews' => $book->users()
+                ->wherePivotNotNull('review')
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'user' => $user->name,
+                        'review' => $user->pivot->review,
+                        'rating' => $user->pivot->rating,
+                    ];
+                }),
+            'user' => Auth::user(),
+            'averageRating' => round($book->users()
+                ->wherePivotNotNull('rating')
+                ->avg('book_user.rating'), 1),
         ]);
     }
 
@@ -113,8 +127,16 @@ class BookController
         $dueDate = now()->addDays(5);
 
         if ($book->available && $book->stock > 0) {
-            $user->books()->attach($bookId, ['isCheckedOut' => true]);
+            // Use syncWithoutDetaching to avoid duplicate pivot entries
+            $user->books()->syncWithoutDetaching([
+                $bookId => [
+                    'isCheckedOut' => true,
+                    'borrowed_at' => $borrowedAt,
+                    'due_date' => $dueDate,
+                ],
+            ]);
 
+            // Update the book's availability status
             $book->isCheckedOut = true;
             $book->available = false;
             $book->stock -= 1;
@@ -122,12 +144,9 @@ class BookController
             $book->due_date = $dueDate;
             $book->save();
 
-
-            return Inertia::render('Books/Show', [
-                'book' => $book,
-                'user' => $user,
-
-            ]);
+            return redirect()
+                ->route('books.show', $bookId)
+                ->with('success', 'Book borrowed successfully!');
         }
 
         return redirect()->back()->with('error', 'The book is not available for borrowing.');
