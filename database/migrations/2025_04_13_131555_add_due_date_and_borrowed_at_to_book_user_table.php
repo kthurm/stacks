@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::table('book_user', function (Blueprint $table) {
             $table->date('due_date')->nullable();
             $table->date('borrowed_at')->nullable();
+            $table->integer('rating')->nullable();
+            $table->text('review')->nullable();
         });
     }
 
@@ -23,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('book_user', function (Blueprint $table) {
-            $table->dropColumn(['due_date', 'borrowed_at']);
+            $table->dropColumn(['due_date', 'borrowed_at', 'rating', 'review']);
         });
     }
 };
