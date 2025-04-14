@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class UserBookController extends Controller
 {
 
     public function index()
     {
-        $books = Book::whereHas('users', function ($query) {
-            $query->where('user_id', auth()->id())
-                  ->where('isCheckedOut', true);
-        })->get();
+        $books = Auth::user()
+        ->books()
+        ->wherePivot('isCheckedOut', true)
+        ->withPivot('review', 'rating', 'isCheckedOut', 'due_date', 'borrowed_at')
+        ->get();
 
         return Inertia::render('UserBooks/Index', [
             'books' => $books,
@@ -27,39 +29,27 @@ class UserBookController extends Controller
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
         ]);
+        $user = Auth::user();
 
-        $book = Book::findOrFail($bookId);
+        $user->books()->updateExistingPivot($bookId, [
+            'rating' => $validated['rating'],
+        ]);
 
-        if ($book->rating_count > 0) {
-            $book->rating = (($book->rating * $book->rating_count) + $validated['rating']) / ($book->rating_count + 1);
-            $book->rating_count += 1;
-        } else {
-
-            $book->rating = $validated['rating'];
-            $book->rating_count = 1;
-        }
-
-
-        $book->save();
-
-        return redirect()->route('userbooks.index')->with('flash', 'Rating updated successfully!');
+        return redirect()->route('userbooks.index')->with('flash', 'Rating updated!');
     }
 
+    public function review(Request $request, $bookId)
+    {
+        $validated = $request->validate([
+            'review' => 'required|string|max:1000',
+        ]);
 
-   public function review(Request $request, $bookId)
-   {
-       $validated = $request->validate([
-           'review' => 'required|string|max:1000',
-       ]);
+        $user = Auth::user();
 
-       $book = Book::findOrFail($bookId);
+        $user->books()->updateExistingPivot($bookId, [
+            'review' => $validated['review'],
+        ]);
 
-
-       $book->review = $validated['review'];
-       $book->save();
-
-
-       return redirect()->route('userbooks.index')->with('flash', 'Review updated successfully!');
+        return redirect()->route('userbooks.index')->with('flash', 'Review updated!');
     }
-
 }

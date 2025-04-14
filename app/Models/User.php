@@ -46,9 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function books()
     {
-        return $this->belongsToMany(Book::class)->withPivot('isCheckedOut');
-
+        return $this->belongsToMany(Book::class)
+            ->withPivot('review', 'rating', 'isCheckedOut', 'borrowed_at', 'due_date')
+            ->withTimestamps();
     }
+
 }
