@@ -11,33 +11,35 @@ const reviewInputs = ref({});
 const books = ref(props.books);
 
 const submitRating = (bookId, rating) => {
-    console.log('Submitting rating:', rating);
+    const form = useForm({ rating });
 
-    const form = useForm({
-        rating: rating,
-    });
-
-    form.post(route('userbooks.rate', bookId), {
+    form.submit('post', route('userbooks.rate', bookId), {
+        preserveScroll: true,
+        preserveState: true,
         onSuccess: () => {
-            const book = books.value.find((book) => book.id === bookId);
-            if (book) {
-                book.rating = rating;
+            const book = books.value.find((b) => b.id === bookId);
+            if (book?.pivot) {
+                book.pivot.rating = rating;
+            } else if (book) {
+                book.pivot = { rating };
             }
-            alert('Rating submitted!');
         },
         onError: (errors) => {
             console.error(errors);
-            alert('There was an error submitting the rating: ' + errors.rating);
+            alert('There was an error submitting the rating.');
         },
     });
 };
 const submitReview = (bookId, review) => {
-    const form = useForm({
-        review: review,
-    });
-    console.log('Submitting review:', review);
+    const form = useForm({ review });
+
     form.post(route('userbooks.review', bookId), {
         onSuccess: () => {
+            const book = books.value.find((b) => b.id === bookId);
+            if (book) {
+                book.review = review;
+            }
+            reviewInputs.value[bookId] = '';
             alert('Review submitted!');
         },
         onError: (errors) => {
@@ -89,15 +91,18 @@ const submitReview = (bookId, review) => {
                             </p>
                         </div>
                     </div>
-                    <div class="my-3 flex flex-col items-center">
+                    <div class="my-3 flex flex-col">
                         <!-- Rating Form -->
                         <div class="mb-3 flex space-x-1">
+                            <span class="ml-1 font-bold">My rating:</span>
                             <template v-for="i in 5" :key="i">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     class="h-6 w-6 cursor-pointer"
-                                    :fill="i <= book.rating ? 'gold' : 'gray'"
+                                    :fill="
+                                        i <= book.pivot.rating ? 'gold' : 'gray'
+                                    "
                                     @click="submitRating(book.id, i)"
                                 >
                                     <path
@@ -111,6 +116,14 @@ const submitReview = (bookId, review) => {
 
                         <!-- Review Form -->
 
+                        <p
+                            v-if="book.review || book.pivot?.review"
+                            class="ml-1"
+                        >
+                            <span class="font-bold">My review: </span>
+                            {{ book.review || book.pivot.review }}
+                        </p>
+
                         <textarea
                             v-model="reviewInputs[book.id]"
                             placeholder="Write your review here..."
@@ -123,6 +136,7 @@ const submitReview = (bookId, review) => {
                                 submitReview(book.id, reviewInputs[book.id])
                             "
                             preserve-scroll
+                            class="mx-auto"
                         >
                             Submit Review
                         </PrimaryButton>
