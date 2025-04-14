@@ -32,9 +32,11 @@ class Book extends Model
     ];
 
 
-    public function users() {
-        return $this->belongsToMany(User::class)->withPivot('isCheckedOut', )->withTimestamps();
+    public function users()
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('review', 'rating', 'isCheckedOut', 'borrowed_at', 'due_date')
+            ->withTimestamps();
     }
-
 
 }
