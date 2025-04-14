@@ -49,6 +49,7 @@ class UserBookController extends Controller
         $user->books()->updateExistingPivot($bookId, [
             'review' => $validated['review'],
         ]);
+      
 
         return redirect()->route('userbooks.index')->with('flash', 'Review updated!');
     }
