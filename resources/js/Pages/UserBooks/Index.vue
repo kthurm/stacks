@@ -7,40 +7,44 @@ import { ref } from 'vue';
 const props = defineProps({
     books: Array,
 });
-
+const reviewInputs = ref({});
 const books = ref(props.books);
 
 const submitRating = (bookId, rating) => {
-    console.log('Submitting rating:', rating);
+    const form = useForm({ rating });
 
-    const form = useForm({
-        rating: rating,
-    });
-
-    form.post(route('userbooks.rate', bookId), {
+    form.submit('post', route('userbooks.rate', bookId), {
+        preserveScroll: true,
+        preserveState: true,
         onSuccess: () => {
-            const book = books.value.find((book) => book.id === bookId);
-            if (book) {
-                book.rating = rating;
+            const book = books.value.find((b) => b.id === bookId);
+            if (book?.pivot) {
+                book.pivot.rating = rating;
+            } else if (book) {
+                book.pivot = { rating };
             }
-            alert('Rating submitted!');
         },
         onError: (errors) => {
             console.error(errors);
-            alert('There was an error submitting the rating: ' + errors.rating);
+            alert('There was an error submitting the rating.');
         },
     });
 };
 const submitReview = (bookId, review) => {
-    const form = useForm();
+    const form = useForm({ review });
+
     form.post(route('userbooks.review', bookId), {
-        review: review,
         onSuccess: () => {
-            const book = books.value.find((book) => book.id === bookId);
+            const book = books.value.find((b) => b.id === bookId);
             if (book) {
                 book.review = review;
             }
+            reviewInputs.value[bookId] = '';
             alert('Review submitted!');
+        },
+        onError: (errors) => {
+            console.error(errors);
+            alert('There was an error submitting the review: ' + errors.review);
         },
     });
 };
@@ -59,20 +63,20 @@ const submitReview = (bookId, review) => {
                 <div
                     v-for="book in books"
                     :key="book.id"
-                    class="flex w-60 flex-col justify-between border p-3 md:w-72"
+                    class="flex w-60 flex-col justify-between border p-3 shadow-lg md:w-72"
                 >
-                    <div class="mx-auto mt-4">
+                    <div class="mx-auto mt-4 flex flex-col items-center">
                         <img
                             :src="book.cover_image"
                             alt="{{ book.title }}"
                             class="object-fit mx-auto w-48 shadow-xl"
                         />
 
-                        <h2 class="my-3 text-sm font-bold">{{ book.title }}</h2>
-                    </div>
-                    <div class="mx-auto">
+                        <h2 class="my-3 text-center text-sm font-bold">
+                            {{ book.title }}
+                        </h2>
                         <div v-if="book.borrowed_at && book.due_date">
-                            <p class="my-3 text-sm">
+                            <p class="text-sm">
                                 Due Date:
                                 {{
                                     new Date(book.due_date).toLocaleDateString(
@@ -86,17 +90,19 @@ const submitReview = (bookId, review) => {
                                 }}
                             </p>
                         </div>
-
-                        <p v-if="book.review">{{ book.review }}</p>
-
+                    </div>
+                    <div class="my-3 flex flex-col">
                         <!-- Rating Form -->
-                        <div class="mt-2 flex space-x-1">
+                        <div class="mb-3 flex space-x-1">
+                            <span class="ml-1 font-bold">My rating:</span>
                             <template v-for="i in 5" :key="i">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     class="h-6 w-6 cursor-pointer"
-                                    :fill="i <= book.rating ? 'gold' : 'gray'"
+                                    :fill="
+                                        i <= book.pivot.rating ? 'gold' : 'gray'
+                                    "
                                     @click="submitRating(book.id, i)"
                                 >
                                     <path
@@ -109,13 +115,26 @@ const submitReview = (bookId, review) => {
                         </div>
 
                         <!-- Review Form -->
+
+                        <p
+                            v-if="book.review || book.pivot?.review"
+                            class="ml-1"
+                        >
+                            <span class="font-bold">My review: </span>
+                            {{ book.review || book.pivot.review }}
+                        </p>
+
                         <textarea
-                            v-model="book.review"
-                            placeholder="Write your review"
-                            class="my-3 mt-2 w-full rounded border p-2"
+                            v-model="reviewInputs[book.id]"
+                            placeholder="Write your review here..."
+                            class="my-4 w-full rounded border p-2"
+                            rows="3"
                         ></textarea>
+
                         <PrimaryButton
-                            @click="submitReview(book.id, book.review)"
+                            @click="
+                                submitReview(book.id, reviewInputs[book.id])
+                            "
                             preserve-scroll
                             class="mx-auto"
                         >

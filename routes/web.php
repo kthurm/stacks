@@ -18,6 +18,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('books', BookController::class);
 
+    Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
+    Route::post('/books/{bookId}/return', [BookController::class, 'returnBook'])->name('books.return');
 
     Route::get('/userbooks', [UserBookController::class, 'index'])->name('userbooks.index');
 
@@ -25,8 +27,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/userbooks/{book}/review', [UserBookController::class, 'review'])->name('userbooks.review');
 
-    Route::post('/books/{book}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
-    Route::post('/books/{bookId}/return', [BookController::class, 'returnBook'])->name('books.return');
 });
 
 Route::get('/dashboard', [BookController::class, 'dashboard'])

@@ -66,8 +66,26 @@ class BookController
 
     public function show(Book $book)
     {
+        $bookData = $book->toArray();
+        $bookData['averageRating'] = round(
+            $book->users()
+                ->wherePivotNotNull('rating')
+                ->avg('book_user.rating'), 1
+        );
+
         return Inertia::render('Books/Show', [
-            'book' => $book,
+            'book' => $bookData,
+            'reviews' => $book->users()
+                ->wherePivotNotNull('review')
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'user' => $user->name,
+                        'review' => $user->pivot->review,
+                        'rating' => $user->pivot->rating,
+                    ];
+                }),
+            'user' => Auth::user(),
         ]);
     }
 
@@ -113,8 +131,16 @@ class BookController
         $dueDate = now()->addDays(5);
 
         if ($book->available && $book->stock > 0) {
-            $user->books()->attach($bookId, ['isCheckedOut' => true]);
+            // Use syncWithoutDetaching to avoid duplicate pivot entries
+            $user->books()->syncWithoutDetaching([
+                $bookId => [
+                    'isCheckedOut' => true,
+                    'borrowed_at' => $borrowedAt,
+                    'due_date' => $dueDate,
+                ],
+            ]);
 
+            // Update the book's availability status
             $book->isCheckedOut = true;
             $book->available = false;
             $book->stock -= 1;
@@ -122,12 +148,9 @@ class BookController
             $book->due_date = $dueDate;
             $book->save();
 
-
-            return Inertia::render('Books/Show', [
-                'book' => $book,
-                'user' => $user,
-
-            ]);
+            return redirect()
+                ->route('books.show', $bookId)
+                ->with('success', 'Book borrowed successfully!');
         }
 
         return redirect()->back()->with('error', 'The book is not available for borrowing.');
@@ -143,28 +166,34 @@ class BookController
 
 
     public function returnBook(Request $request, $bookId)
-    {
-        $user = Auth::user();
-        $book = Book::findOrFail($bookId);
+{
+    $user = Auth::user();
+    $book = Book::findOrFail($bookId);
 
-        if ($user->role !== 'librarian') {
-            if (!$user->books()->wherePivot('book_id', $bookId)->exists()) {
-                return redirect()->back()->with('error', 'You cannot return this book.');
-            }
+    // If the user is not a librarian, only allow return if they have the book
+    if ($user->role !== 'librarian') {
+        if (!$user->books()->wherePivot('book_id', $bookId)->wherePivot('isCheckedOut', true)->exists()) {
+            return redirect()->back()->with('error', 'You cannot return this book.');
         }
 
-        $user->books()->detach($bookId);
+        $user->books()->updateExistingPivot($bookId, ['isCheckedOut' => false]);
+    } else {
 
-        $book->isCheckedOut = false;
-        $book->available = true;
-        $book->stock += 1;
-        $book->due_date = null;
-        $book->save();
-
-
-
-        return redirect()->back()->with('success', 'Book returned successfully.');
+        \DB::table('book_user')
+            ->where('book_id', $bookId)
+            ->where('isCheckedOut', true)
+            ->update(['isCheckedOut' => false]);
     }
+
+
+    $book->isCheckedOut = false;
+    $book->available = true;
+    $book->stock += 1;
+    $book->due_date = null;
+    $book->save();
+
+    return redirect()->back()->with('success', 'Book returned successfully.');
+}
 
 
     public function update(Request $request, Book $book)
