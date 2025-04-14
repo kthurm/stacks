@@ -66,8 +66,15 @@ class BookController
 
     public function show(Book $book)
     {
+        $bookData = $book->toArray();
+        $bookData['averageRating'] = round(
+            $book->users()
+                ->wherePivotNotNull('rating')
+                ->avg('book_user.rating'), 1
+        );
+
         return Inertia::render('Books/Show', [
-            'book' => $book,
+            'book' => $bookData,
             'reviews' => $book->users()
                 ->wherePivotNotNull('review')
                 ->get()
@@ -79,9 +86,6 @@ class BookController
                     ];
                 }),
             'user' => Auth::user(),
-            'averageRating' => round($book->users()
-                ->wherePivotNotNull('rating')
-                ->avg('book_user.rating'), 1),
         ]);
     }
 
